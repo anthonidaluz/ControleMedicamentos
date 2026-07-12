@@ -26,13 +26,19 @@ public class TelaPrincipal
         RepositorioRequisicaoEntradaEmArquivo repositorioRequisicao = new RepositorioRequisicaoEntradaEmArquivo(contexto);
         RepositorioRequisicaoSaidaEmArquivo repositorioRequisicaoSaida = new RepositorioRequisicaoSaidaEmArquivo(contexto);
 
-
         telaFornecedor = new TelaFornecedor(repositorioFornecedor);
         telaMedicamento = new TelaMedicamento(repositorioMedicamento, repositorioFornecedor);
         telaPaciente = new TelaPaciente(repositorioPaciente);
         telaFuncionario = new TelaFuncionario(repositorioFuncionario);
         telaRequisicaoEntrada = new TelaRequisicaoEntrada(repositorioRequisicao, repositorioMedicamento);
-        telaRequisicaoSaida = new TelaRequisicaoSaida(repositorioRequisicao, repositorioMedicamento);
+
+        telaRequisicaoSaida = new TelaRequisicaoSaida(
+            repositorioRequisicaoSaida,
+            repositorioPaciente,
+            repositorioMedicamento,
+            telaPaciente,
+            telaMedicamento
+        );
     }
 
     public ITelaOpcoes? ObterOpcaoMenuPrincipal()
@@ -45,8 +51,9 @@ public class TelaPrincipal
         Console.WriteLine("1 - Gestão de Fornecedores");
         Console.WriteLine("2 - Gestão de Medicamentos");
         Console.WriteLine("3 - Gestão de Pacientes");
-        Console.WriteLine("4 - Gestão de Funcionarios");
+        Console.WriteLine("4 - Gestão de Funcionários");
         Console.WriteLine("5 - Gestão de Requisições de Entrada");
+        Console.WriteLine("6 - Gestão de Requisições de Saída"); 
         Console.WriteLine("S - Sair");
         Console.WriteLine("---------------------------------");
         Console.Write("> ");
@@ -54,21 +61,12 @@ public class TelaPrincipal
         string? opcaoMenuPrincipal = Console.ReadLine()?.ToUpper();
         Console.ResetColor();
 
-        if (opcaoMenuPrincipal == "1")
-            return telaFornecedor;
-
-        if (opcaoMenuPrincipal == "2")
-            return telaMedicamento;
-
-        if (opcaoMenuPrincipal == "3")
-            return telaPaciente;
-
-        if (opcaoMenuPrincipal == "4")
-            return telaFuncionario;
-
-        if (opcaoMenuPrincipal == "5")
-            return telaRequisicaoSaida;
-
+        if (opcaoMenuPrincipal == "1") return telaFornecedor;
+        if (opcaoMenuPrincipal == "2") return telaMedicamento;
+        if (opcaoMenuPrincipal == "3") return telaPaciente;
+        if (opcaoMenuPrincipal == "4") return telaFuncionario;
+        if (opcaoMenuPrincipal == "5") return telaRequisicaoEntrada; 
+        if (opcaoMenuPrincipal == "6") return telaRequisicaoSaida;   
 
         return null;
     }

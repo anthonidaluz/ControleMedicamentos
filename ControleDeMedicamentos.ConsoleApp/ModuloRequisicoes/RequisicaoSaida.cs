@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using ControleDeMedicamentos.ConsoleApp.Compartilhado;
 using ControleDeMedicamentos.ConsoleApp.ModuloMedicamentos;
-using ControleDeMedicamentos.ConsoleApp.ModuloPacientes;
 using ControleDeMedicamentos.ConsoleApp.Modulos.ModuloPacientes;
 
 namespace ControleDeMedicamentos.ConsoleApp.ModuloRequisicoes
