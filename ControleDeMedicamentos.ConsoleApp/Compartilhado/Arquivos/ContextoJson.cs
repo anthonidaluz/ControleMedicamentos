@@ -4,6 +4,7 @@ using ControleDeMedicamentos.ConsoleApp.ModuloFornecedores;
 using ControleDeMedicamentos.ConsoleApp.ModuloMedicamentos;
 using ControleDeMedicamentos.ConsoleApp.ModuloPacientes;
 using ControleDeMedicamentos.ConsoleApp.ModuloRequisicoes;
+using ControleDeMedicamentos.ConsoleApp.Modulos.ModuloPacientes;
 
 namespace ControleDeMedicamentos.ConsoleApp.Compartilhado.Arquivos;
 
