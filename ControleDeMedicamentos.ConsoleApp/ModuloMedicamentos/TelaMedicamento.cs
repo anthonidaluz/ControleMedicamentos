@@ -26,7 +26,7 @@ public class TelaMedicamento : TelaBase<Medicamento>, ITelaOpcoes, ITelaCrud
         }
 
         Console.WriteLine(
-            "{0, -7} | {1, -20} | {2, -20} | {3, -20} | {4, -10}",
+            "{0, -7} | {1, -20} | {2, -20} | {3, -20} | {4, -15}",
             "Id", "Nome", "Fornecedor", "Descrição", "Estoque"
         );
 
@@ -34,10 +34,22 @@ public class TelaMedicamento : TelaBase<Medicamento>, ITelaOpcoes, ITelaCrud
 
         foreach (Medicamento m in registros)
         {
-            Console.WriteLine(
-                "{0, -7} | {1, -20} | {2, -20} | {3, -20} | {4, -10}",
-                m.Id, m.Nome, m.Fornecedor.Nome, m.Descricao, m.QuantidadeEmEstoque
-            );
+            if (m.QuantidadeEmEstoque < 20)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(
+                    "{0, -7} | {1, -20} | {2, -20} | {3, -20} | {4, -15}",
+                    m.Id, m.Nome, m.Fornecedor.Nome, m.Descricao, $"{m.QuantidadeEmEstoque} (Em falta)"
+                );
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.WriteLine(
+                    "{0, -7} | {1, -20} | {2, -20} | {3, -20} | {4, -15}",
+                    m.Id, m.Nome, m.Fornecedor.Nome, m.Descricao, m.QuantidadeEmEstoque
+                );
+            }
         }
 
         if (deveExibirCabecalho)
