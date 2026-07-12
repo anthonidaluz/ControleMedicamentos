@@ -15,6 +15,7 @@ public class TelaPrincipal
     private readonly TelaPaciente telaPaciente;
     private readonly TelaFuncionario telaFuncionario;
     private readonly TelaRequisicaoEntrada telaRequisicaoEntrada;
+    private readonly TelaRequisicaoSaida telaRequisicaoSaida;
 
     public TelaPrincipal(ContextoJson contexto)
     {
@@ -23,12 +24,15 @@ public class TelaPrincipal
         RepositorioPacienteEmArquivo repositorioPaciente = new RepositorioPacienteEmArquivo(contexto);
         RepositorioFuncionarioEmArquivo repositorioFuncionario = new RepositorioFuncionarioEmArquivo(contexto);
         RepositorioRequisicaoEntradaEmArquivo repositorioRequisicao = new RepositorioRequisicaoEntradaEmArquivo(contexto);
+        RepositorioRequisicaoSaidaEmArquivo repositorioRequisicaoSaida = new RepositorioRequisicaoSaidaEmArquivo(contexto);
+
 
         telaFornecedor = new TelaFornecedor(repositorioFornecedor);
         telaMedicamento = new TelaMedicamento(repositorioMedicamento, repositorioFornecedor);
         telaPaciente = new TelaPaciente(repositorioPaciente);
         telaFuncionario = new TelaFuncionario(repositorioFuncionario);
         telaRequisicaoEntrada = new TelaRequisicaoEntrada(repositorioRequisicao, repositorioMedicamento);
+        telaRequisicaoSaida = new TelaRequisicaoSaida(repositorioRequisicao, repositorioMedicamento);
     }
 
     public ITelaOpcoes? ObterOpcaoMenuPrincipal()
@@ -63,7 +67,7 @@ public class TelaPrincipal
             return telaFuncionario;
 
         if (opcaoMenuPrincipal == "5")
-            return telaRequisicaoEntrada;
+            return telaRequisicaoSaida;
 
 
         return null;
