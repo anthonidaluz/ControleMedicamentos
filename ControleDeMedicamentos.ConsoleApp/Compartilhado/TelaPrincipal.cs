@@ -30,6 +30,7 @@ public class TelaPrincipal
     public ITelaOpcoes? ObterOpcaoMenuPrincipal()
     {
         Console.Clear();
+        Console.ForegroundColor = ConsoleColor.DarkCyan;
         Console.WriteLine("---------------------------------");
         Console.WriteLine("Controle de Medicamentos");
         Console.WriteLine("---------------------------------");
@@ -42,6 +43,7 @@ public class TelaPrincipal
         Console.Write("> ");
 
         string? opcaoMenuPrincipal = Console.ReadLine()?.ToUpper();
+        Console.ResetColor();
 
         if (opcaoMenuPrincipal == "1")
             return telaFornecedor;
@@ -54,6 +56,8 @@ public class TelaPrincipal
 
         if (opcaoMenuPrincipal == "4")
             return telaRequisicaoEntrada;
+
+
 
         return null;
     }
