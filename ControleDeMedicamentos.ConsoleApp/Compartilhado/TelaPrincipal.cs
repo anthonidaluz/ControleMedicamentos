@@ -27,6 +27,7 @@ public class TelaPrincipal
         telaFornecedor = new TelaFornecedor(repositorioFornecedor);
         telaMedicamento = new TelaMedicamento(repositorioMedicamento, repositorioFornecedor);
         telaPaciente = new TelaPaciente(repositorioPaciente);
+        telaFuncionario = new TelaFuncionario(repositorioFuncionario);
         telaRequisicaoEntrada = new TelaRequisicaoEntrada(repositorioRequisicao, repositorioMedicamento);
     }
 
@@ -59,8 +60,10 @@ public class TelaPrincipal
             return telaPaciente;
 
         if (opcaoMenuPrincipal == "4")
-            return telaRequisicaoEntrada;
+            return telaFuncionario;
 
+        if (opcaoMenuPrincipal == "5")
+            return telaRequisicaoEntrada;
 
 
         return null;

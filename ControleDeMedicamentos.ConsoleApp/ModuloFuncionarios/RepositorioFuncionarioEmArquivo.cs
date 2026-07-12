@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ControleDeMedicamentos.ConsoleApp.Compartilhado.Arquivos;
-using ControleDeMedicamentos.ConsoleApp.ModuloFuncionarios;
 
 namespace ControleDeMedicamentos.ConsoleApp.ModuloFuncionarios
 {
