@@ -125,6 +125,42 @@ public class MedicamentoController : Controller
         return RedirectToAction(nameof(Listar));
     }
 
+    [HttpGet]
+    public ActionResult Excluir(int id)
+    {
+        Medicamento? medicamentoSelecionado = repositorio.SelecionarPorId(id);
+
+        if (medicamentoSelecionado == null)
+            return NotFound();
+
+        ExcluirMedicamentoViewModel viewModel = new ExcluirMedicamentoViewModel(
+            id,
+            medicamentoSelecionado.Nome
+        );
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    public ActionResult Excluir(ExcluirMedicamentoViewModel excluirVm)
+    {
+        Medicamento? medicamentoSelecionado = repositorio.SelecionarPorId(excluirVm.Id);
+
+        if (medicamentoSelecionado == null)
+            return NotFound();
+
+        if (medicamentoSelecionado.Requisicoes.Count > 0 || medicamentoSelecionado.RequisicoesSaida.Count > 0)
+        {
+            ModelState.AddModelError(string.Empty, "Não é possível excluir um medicamento que possui requisições de entrada ou saída.");
+
+            return View(excluirVm);
+        }
+
+        repositorio.Excluir(excluirVm.Id);
+
+        return RedirectToAction(nameof(Listar));
+    }
+
     private List<FornecedorMedicamentoViewModel> ObterFornecedores()
     {
         List<FornecedorMedicamentoViewModel> viewModels = [];
