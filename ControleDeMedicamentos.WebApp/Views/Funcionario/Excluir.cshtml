@@ -6,6 +6,11 @@
 
 <div class="row justify-content-start">
     <form class="col-lg-6" asp-action="Excluir" asp-route-id="@Model.Id" method="post">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="ModelOnly" class="alert alert-warning" role="alert"></div>
+        }
+
         <div class="alert alert-danger" role="alert">
             Você deseja realmente excluir o funcionário "@Model.Nome"? Esta ação é irreversível.
         </div>

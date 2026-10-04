@@ -1,3 +1,4 @@
+using ControleDeMedicamentos.WebApp.ModuloRequisicoes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControleDeMedicamentos.WebApp.ModuloFuncionarios;
@@ -5,10 +6,15 @@ namespace ControleDeMedicamentos.WebApp.ModuloFuncionarios;
 public class FuncionarioController : Controller
 {
     private readonly RepositorioFuncionarioEmArquivo repositorio;
+    private readonly RepositorioRequisicaoEntradaEmArquivo repositorioRequisicaoEntrada;
 
-    public FuncionarioController(RepositorioFuncionarioEmArquivo repositorio)
+    public FuncionarioController(
+        RepositorioFuncionarioEmArquivo repositorio,
+        RepositorioRequisicaoEntradaEmArquivo repositorioRequisicaoEntrada
+    )
     {
         this.repositorio = repositorio;
+        this.repositorioRequisicaoEntrada = repositorioRequisicaoEntrada;
     }
 
     [HttpGet]
@@ -119,6 +125,13 @@ public class FuncionarioController : Controller
     [HttpPost]
     public ActionResult Excluir(ExcluirFuncionarioViewModel excluirVm)
     {
+        if (ExistemRequisicoesDoFuncionario(excluirVm.Id))
+        {
+            ModelState.AddModelError(string.Empty, "Não é possível excluir um funcionário que possui requisições de entrada.");
+
+            return View(excluirVm);
+        }
+
         bool conseguiuExcluir = repositorio.Excluir(excluirVm.Id);
 
         if (!conseguiuExcluir)
@@ -132,6 +145,17 @@ public class FuncionarioController : Controller
         foreach (Funcionario f in repositorio.SelecionarTodos())
         {
             if (f.Id != idIgnorado && f.Cpf == cpf)
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool ExistemRequisicoesDoFuncionario(int idFuncionario)
+    {
+        foreach (RequisicaoEntrada r in repositorioRequisicaoEntrada.SelecionarTodos())
+        {
+            if (r.Funcionario?.Id == idFuncionario)
                 return true;
         }
 
