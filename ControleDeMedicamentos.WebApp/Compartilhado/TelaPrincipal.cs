@@ -4,7 +4,6 @@ using ControleDeMedicamentos.WebApp.ModuloFuncionarios;
 using ControleDeMedicamentos.WebApp.ModuloMedicamentos;
 using ControleDeMedicamentos.WebApp.ModuloPacientes;
 using ControleDeMedicamentos.WebApp.ModuloRequisicoes;
-using ControleDeMedicamentos.WebApp.Modulos.ModuloPacientes;
 
 namespace ControleDeMedicamentos.WebApp.Compartilhado;
 
