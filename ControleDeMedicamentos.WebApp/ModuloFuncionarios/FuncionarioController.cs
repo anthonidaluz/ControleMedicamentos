@@ -32,4 +32,41 @@ public class FuncionarioController : Controller
 
         return View(viewModels);
     }
+
+    [HttpGet]
+    public ActionResult Cadastrar()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public ActionResult Cadastrar(CadastrarFuncionarioViewModel cadastrarVm)
+    {
+        if (ExisteFuncionarioComCpf(cadastrarVm.Cpf))
+            ModelState.AddModelError(nameof(cadastrarVm.Cpf), "Já existe um funcionário cadastrado com o CPF informado.");
+
+        if (!ModelState.IsValid)
+            return View(cadastrarVm);
+
+        Funcionario funcionario = new Funcionario(
+            cadastrarVm.Nome,
+            cadastrarVm.Telefone,
+            cadastrarVm.Cpf
+        );
+
+        repositorio.Cadastrar(funcionario);
+
+        return RedirectToAction(nameof(Listar));
+    }
+
+    private bool ExisteFuncionarioComCpf(string cpf, int? idIgnorado = null)
+    {
+        foreach (Funcionario f in repositorio.SelecionarTodos())
+        {
+            if (f.Id != idIgnorado && f.Cpf == cpf)
+                return true;
+        }
+
+        return false;
+    }
 }
