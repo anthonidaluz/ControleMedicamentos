@@ -61,6 +61,49 @@ public class PacienteController : Controller
         return RedirectToAction(nameof(Listar));
     }
 
+    [HttpGet]
+    public ActionResult Editar(int id)
+    {
+        Paciente? pacienteSelecionado = repositorio.SelecionarPorId(id);
+
+        if (pacienteSelecionado == null)
+            return NotFound();
+
+        EditarPacienteViewModel viewModel = new EditarPacienteViewModel(
+            id,
+            pacienteSelecionado.Nome,
+            pacienteSelecionado.Telefone,
+            pacienteSelecionado.CartaoSus,
+            pacienteSelecionado.Cpf
+        );
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    public ActionResult Editar(EditarPacienteViewModel editarVm)
+    {
+        if (ExistePacienteComCartaoSus(editarVm.CartaoSus, editarVm.Id))
+            ModelState.AddModelError(nameof(editarVm.CartaoSus), "Já existe um paciente cadastrado com o Cartão do SUS informado.");
+
+        if (!ModelState.IsValid)
+            return View(editarVm);
+
+        Paciente pacienteAtualizado = new Paciente(
+            editarVm.Nome,
+            editarVm.Telefone,
+            editarVm.CartaoSus,
+            editarVm.Cpf
+        );
+
+        bool conseguiuEditar = repositorio.Editar(editarVm.Id, pacienteAtualizado);
+
+        if (!conseguiuEditar)
+            return NotFound();
+
+        return RedirectToAction(nameof(Listar));
+    }
+
     private bool ExistePacienteComCartaoSus(string cartaoSus, int? idIgnorado = null)
     {
         foreach (Paciente p in repositorio.SelecionarTodos())
