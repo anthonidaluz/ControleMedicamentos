@@ -1,3 +1,4 @@
+using ControleDeMedicamentos.WebApp.ModuloRequisicoes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControleDeMedicamentos.WebApp.ModuloPacientes;
@@ -5,10 +6,15 @@ namespace ControleDeMedicamentos.WebApp.ModuloPacientes;
 public class PacienteController : Controller
 {
     private readonly RepositorioPacienteEmArquivo repositorio;
+    private readonly RepositorioRequisicaoSaidaEmArquivo repositorioRequisicaoSaida;
 
-    public PacienteController(RepositorioPacienteEmArquivo repositorio)
+    public PacienteController(
+        RepositorioPacienteEmArquivo repositorio,
+        RepositorioRequisicaoSaidaEmArquivo repositorioRequisicaoSaida
+    )
     {
         this.repositorio = repositorio;
+        this.repositorioRequisicaoSaida = repositorioRequisicaoSaida;
     }
 
     [HttpGet]
@@ -104,11 +110,56 @@ public class PacienteController : Controller
         return RedirectToAction(nameof(Listar));
     }
 
+    [HttpGet]
+    public ActionResult Excluir(int id)
+    {
+        Paciente? pacienteSelecionado = repositorio.SelecionarPorId(id);
+
+        if (pacienteSelecionado == null)
+            return NotFound();
+
+        ExcluirPacienteViewModel viewModel = new ExcluirPacienteViewModel(
+            id,
+            pacienteSelecionado.Nome
+        );
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    public ActionResult Excluir(ExcluirPacienteViewModel excluirVm)
+    {
+        if (ExistemRequisicoesDoPaciente(excluirVm.Id))
+        {
+            ModelState.AddModelError(string.Empty, "Não é possível excluir um paciente que possui requisições de saída.");
+
+            return View(excluirVm);
+        }
+
+        bool conseguiuExcluir = repositorio.Excluir(excluirVm.Id);
+
+        if (!conseguiuExcluir)
+            return NotFound();
+
+        return RedirectToAction(nameof(Listar));
+    }
+
     private bool ExistePacienteComCartaoSus(string cartaoSus, int? idIgnorado = null)
     {
         foreach (Paciente p in repositorio.SelecionarTodos())
         {
             if (p.Id != idIgnorado && p.CartaoSus == cartaoSus)
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool ExistemRequisicoesDoPaciente(int idPaciente)
+    {
+        foreach (RequisicaoSaida r in repositorioRequisicaoSaida.SelecionarTodos())
+        {
+            if (r.Paciente?.Id == idPaciente)
                 return true;
         }
 
