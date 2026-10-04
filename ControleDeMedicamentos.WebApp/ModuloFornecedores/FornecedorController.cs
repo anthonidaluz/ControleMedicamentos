@@ -59,6 +59,47 @@ public class FornecedorController : Controller
         return RedirectToAction(nameof(Listar));
     }
 
+    [HttpGet]
+    public ActionResult Editar(int id)
+    {
+        Fornecedor? fornecedorSelecionado = repositorio.SelecionarPorId(id);
+
+        if (fornecedorSelecionado == null)
+            return NotFound();
+
+        EditarFornecedorViewModel viewModel = new EditarFornecedorViewModel(
+            id,
+            fornecedorSelecionado.Nome,
+            fornecedorSelecionado.Telefone,
+            fornecedorSelecionado.Cnpj
+        );
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    public ActionResult Editar(EditarFornecedorViewModel editarVm)
+    {
+        if (ExisteFornecedorComCnpj(editarVm.Cnpj, editarVm.Id))
+            ModelState.AddModelError(nameof(editarVm.Cnpj), "Já existe um fornecedor cadastrado com o CNPJ informado.");
+
+        if (!ModelState.IsValid)
+            return View(editarVm);
+
+        Fornecedor fornecedorAtualizado = new Fornecedor(
+            editarVm.Nome,
+            editarVm.Telefone,
+            editarVm.Cnpj
+        );
+
+        bool conseguiuEditar = repositorio.Editar(editarVm.Id, fornecedorAtualizado);
+
+        if (!conseguiuEditar)
+            return NotFound();
+
+        return RedirectToAction(nameof(Listar));
+    }
+
     private bool ExisteFornecedorComCnpj(string cnpj, int? idIgnorado = null)
     {
         foreach (Fornecedor f in repositorio.SelecionarTodos())
