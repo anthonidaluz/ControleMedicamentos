@@ -59,6 +59,47 @@ public class FuncionarioController : Controller
         return RedirectToAction(nameof(Listar));
     }
 
+    [HttpGet]
+    public ActionResult Editar(int id)
+    {
+        Funcionario? funcionarioSelecionado = repositorio.SelecionarPorId(id);
+
+        if (funcionarioSelecionado == null)
+            return NotFound();
+
+        EditarFuncionarioViewModel viewModel = new EditarFuncionarioViewModel(
+            id,
+            funcionarioSelecionado.Nome,
+            funcionarioSelecionado.Telefone,
+            funcionarioSelecionado.Cpf
+        );
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    public ActionResult Editar(EditarFuncionarioViewModel editarVm)
+    {
+        if (ExisteFuncionarioComCpf(editarVm.Cpf, editarVm.Id))
+            ModelState.AddModelError(nameof(editarVm.Cpf), "Já existe um funcionário cadastrado com o CPF informado.");
+
+        if (!ModelState.IsValid)
+            return View(editarVm);
+
+        Funcionario funcionarioAtualizado = new Funcionario(
+            editarVm.Nome,
+            editarVm.Telefone,
+            editarVm.Cpf
+        );
+
+        bool conseguiuEditar = repositorio.Editar(editarVm.Id, funcionarioAtualizado);
+
+        if (!conseguiuEditar)
+            return NotFound();
+
+        return RedirectToAction(nameof(Listar));
+    }
+
     private bool ExisteFuncionarioComCpf(string cpf, int? idIgnorado = null)
     {
         foreach (Funcionario f in repositorio.SelecionarTodos())
