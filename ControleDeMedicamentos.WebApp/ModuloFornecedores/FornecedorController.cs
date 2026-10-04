@@ -32,4 +32,41 @@ public class FornecedorController : Controller
 
         return View(viewModels);
     }
+
+    [HttpGet]
+    public ActionResult Cadastrar()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public ActionResult Cadastrar(CadastrarFornecedorViewModel cadastrarVm)
+    {
+        if (ExisteFornecedorComCnpj(cadastrarVm.Cnpj))
+            ModelState.AddModelError(nameof(cadastrarVm.Cnpj), "Já existe um fornecedor cadastrado com o CNPJ informado.");
+
+        if (!ModelState.IsValid)
+            return View(cadastrarVm);
+
+        Fornecedor fornecedor = new Fornecedor(
+            cadastrarVm.Nome,
+            cadastrarVm.Telefone,
+            cadastrarVm.Cnpj
+        );
+
+        repositorio.Cadastrar(fornecedor);
+
+        return RedirectToAction(nameof(Listar));
+    }
+
+    private bool ExisteFornecedorComCnpj(string cnpj, int? idIgnorado = null)
+    {
+        foreach (Fornecedor f in repositorio.SelecionarTodos())
+        {
+            if (f.Id != idIgnorado && f.Cnpj == cnpj)
+                return true;
+        }
+
+        return false;
+    }
 }
