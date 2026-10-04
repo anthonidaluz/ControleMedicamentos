@@ -1,5 +1,7 @@
 # Controle de Medicamentos
 
+<img width="1080" height="600" alt="VsDebugConsole_b1gAhu2XYL" src="https://github.com/user-attachments/assets/1464fc4b-6411-41be-a705-65da04f9c3bf" />
+
 ## Projeto
 
 Desenvolvido durante o curso Backend da [Academia do Programador](https://www.academiadoprogramador.net) 2026
