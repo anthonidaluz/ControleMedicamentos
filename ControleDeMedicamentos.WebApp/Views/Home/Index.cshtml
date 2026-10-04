@@ -1,0 +1,38 @@
+@{
+    ViewBag.Titulo = "Página Inicial";
+
+    (string Controller, string Titulo, string Descricao, string Icone)[] modulos =
+    [
+        ("Fornecedor", "Fornecedores", "Cadastre os fornecedores dos medicamentos.", "bi-truck"),
+        ("Medicamento", "Medicamentos", "Gerencie medicamentos e acompanhe o estoque.", "bi-capsule"),
+        ("Funcionario", "Funcionários", "Cadastre os funcionários responsáveis pelas entradas.", "bi-person-badge"),
+        ("Paciente", "Pacientes", "Cadastre os pacientes atendidos.", "bi-people"),
+        ("RequisicaoEntrada", "Entradas", "Registre a chegada de medicamentos no estoque.", "bi-box-arrow-in-down"),
+        ("RequisicaoSaida", "Saídas", "Registre a retirada de medicamentos por pacientes.", "bi-box-arrow-up")
+    ];
+}
+
+<h2>Boas-vindas ao Controle de Medicamentos!</h2>
+
+<hr>
+
+<p class="mt-4">
+    Gerencie fornecedores, medicamentos, funcionários, pacientes e o estoque de medicamentos.
+</p>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mt-2">
+    @foreach (var m in modulos)
+    {
+        <div class="col">
+            <a class="card h-100 text-decoration-none" asp-controller="@m.Controller" asp-action="Listar">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="bi @m.Icone me-2"></i>
+                        @m.Titulo
+                    </h5>
+                    <p class="card-text text-body-secondary">@m.Descricao</p>
+                </div>
+            </a>
+        </div>
+    }
+</div>

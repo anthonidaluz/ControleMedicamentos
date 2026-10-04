@@ -152,8 +152,10 @@ Campos obrigatórios:
 4. Para executar o projeto compilando em tempo real
 
    ```bash
-   dotnet run --project ControleDeMedicamentos.ConsoleApp
+   dotnet run --project ControleDeMedicamentos.WebApp
    ```
+
+5. Acesse a aplicação no navegador pelo endereço exibido no terminal (por padrão `https://localhost:56579` ou `http://localhost:56580`)
 
 ## Requisitos
 

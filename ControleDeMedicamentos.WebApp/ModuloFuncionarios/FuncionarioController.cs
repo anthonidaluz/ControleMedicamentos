@@ -1,0 +1,164 @@
+using ControleDeMedicamentos.WebApp.ModuloRequisicoes;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ControleDeMedicamentos.WebApp.ModuloFuncionarios;
+
+public class FuncionarioController : Controller
+{
+    private readonly RepositorioFuncionarioEmArquivo repositorio;
+    private readonly RepositorioRequisicaoEntradaEmArquivo repositorioRequisicaoEntrada;
+
+    public FuncionarioController(
+        RepositorioFuncionarioEmArquivo repositorio,
+        RepositorioRequisicaoEntradaEmArquivo repositorioRequisicaoEntrada
+    )
+    {
+        this.repositorio = repositorio;
+        this.repositorioRequisicaoEntrada = repositorioRequisicaoEntrada;
+    }
+
+    [HttpGet]
+    public ActionResult Listar()
+    {
+        List<Funcionario> funcionarios = repositorio.SelecionarTodos();
+
+        List<ListarFuncionarioViewModel> viewModels = [];
+
+        foreach (Funcionario f in funcionarios)
+        {
+            ListarFuncionarioViewModel vm = new ListarFuncionarioViewModel(
+                f.Id,
+                f.Nome,
+                f.Telefone,
+                f.Cpf
+            );
+
+            viewModels.Add(vm);
+        }
+
+        return View(viewModels);
+    }
+
+    [HttpGet]
+    public ActionResult Cadastrar()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public ActionResult Cadastrar(CadastrarFuncionarioViewModel cadastrarVm)
+    {
+        if (ExisteFuncionarioComCpf(cadastrarVm.Cpf))
+            ModelState.AddModelError(nameof(cadastrarVm.Cpf), "Já existe um funcionário cadastrado com o CPF informado.");
+
+        if (!ModelState.IsValid)
+            return View(cadastrarVm);
+
+        Funcionario funcionario = new Funcionario(
+            cadastrarVm.Nome,
+            cadastrarVm.Telefone,
+            cadastrarVm.Cpf
+        );
+
+        repositorio.Cadastrar(funcionario);
+
+        return RedirectToAction(nameof(Listar));
+    }
+
+    [HttpGet]
+    public ActionResult Editar(int id)
+    {
+        Funcionario? funcionarioSelecionado = repositorio.SelecionarPorId(id);
+
+        if (funcionarioSelecionado == null)
+            return NotFound();
+
+        EditarFuncionarioViewModel viewModel = new EditarFuncionarioViewModel(
+            id,
+            funcionarioSelecionado.Nome,
+            funcionarioSelecionado.Telefone,
+            funcionarioSelecionado.Cpf
+        );
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    public ActionResult Editar(EditarFuncionarioViewModel editarVm)
+    {
+        if (ExisteFuncionarioComCpf(editarVm.Cpf, editarVm.Id))
+            ModelState.AddModelError(nameof(editarVm.Cpf), "Já existe um funcionário cadastrado com o CPF informado.");
+
+        if (!ModelState.IsValid)
+            return View(editarVm);
+
+        Funcionario funcionarioAtualizado = new Funcionario(
+            editarVm.Nome,
+            editarVm.Telefone,
+            editarVm.Cpf
+        );
+
+        bool conseguiuEditar = repositorio.Editar(editarVm.Id, funcionarioAtualizado);
+
+        if (!conseguiuEditar)
+            return NotFound();
+
+        return RedirectToAction(nameof(Listar));
+    }
+
+    [HttpGet]
+    public ActionResult Excluir(int id)
+    {
+        Funcionario? funcionarioSelecionado = repositorio.SelecionarPorId(id);
+
+        if (funcionarioSelecionado == null)
+            return NotFound();
+
+        ExcluirFuncionarioViewModel viewModel = new ExcluirFuncionarioViewModel(
+            id,
+            funcionarioSelecionado.Nome
+        );
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    public ActionResult Excluir(ExcluirFuncionarioViewModel excluirVm)
+    {
+        if (ExistemRequisicoesDoFuncionario(excluirVm.Id))
+        {
+            ModelState.AddModelError(string.Empty, "Não é possível excluir um funcionário que possui requisições de entrada.");
+
+            return View(excluirVm);
+        }
+
+        bool conseguiuExcluir = repositorio.Excluir(excluirVm.Id);
+
+        if (!conseguiuExcluir)
+            return NotFound();
+
+        return RedirectToAction(nameof(Listar));
+    }
+
+    private bool ExisteFuncionarioComCpf(string cpf, int? idIgnorado = null)
+    {
+        foreach (Funcionario f in repositorio.SelecionarTodos())
+        {
+            if (f.Id != idIgnorado && f.Cpf == cpf)
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool ExistemRequisicoesDoFuncionario(int idFuncionario)
+    {
+        foreach (RequisicaoEntrada r in repositorioRequisicaoEntrada.SelecionarTodos())
+        {
+            if (r.Funcionario?.Id == idFuncionario)
+                return true;
+        }
+
+        return false;
+    }
+}
