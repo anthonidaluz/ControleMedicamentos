@@ -1,3 +1,4 @@
+using ControleDeMedicamentos.WebApp.ModuloMedicamentos;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ControleDeMedicamentos.WebApp.ModuloFornecedores;
@@ -5,10 +6,15 @@ namespace ControleDeMedicamentos.WebApp.ModuloFornecedores;
 public class FornecedorController : Controller
 {
     private readonly RepositorioFornecedorEmArquivo repositorio;
+    private readonly RepositorioMedicamentoEmArquivo repositorioMedicamento;
 
-    public FornecedorController(RepositorioFornecedorEmArquivo repositorio)
+    public FornecedorController(
+        RepositorioFornecedorEmArquivo repositorio,
+        RepositorioMedicamentoEmArquivo repositorioMedicamento
+    )
     {
         this.repositorio = repositorio;
+        this.repositorioMedicamento = repositorioMedicamento;
     }
 
     [HttpGet]
@@ -100,11 +106,56 @@ public class FornecedorController : Controller
         return RedirectToAction(nameof(Listar));
     }
 
+    [HttpGet]
+    public ActionResult Excluir(int id)
+    {
+        Fornecedor? fornecedorSelecionado = repositorio.SelecionarPorId(id);
+
+        if (fornecedorSelecionado == null)
+            return NotFound();
+
+        ExcluirFornecedorViewModel viewModel = new ExcluirFornecedorViewModel(
+            id,
+            fornecedorSelecionado.Nome
+        );
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    public ActionResult Excluir(ExcluirFornecedorViewModel excluirVm)
+    {
+        if (ExistemMedicamentosDoFornecedor(excluirVm.Id))
+        {
+            ModelState.AddModelError(string.Empty, "Não é possível excluir um fornecedor que possui medicamentos cadastrados.");
+
+            return View(excluirVm);
+        }
+
+        bool conseguiuExcluir = repositorio.Excluir(excluirVm.Id);
+
+        if (!conseguiuExcluir)
+            return NotFound();
+
+        return RedirectToAction(nameof(Listar));
+    }
+
     private bool ExisteFornecedorComCnpj(string cnpj, int? idIgnorado = null)
     {
         foreach (Fornecedor f in repositorio.SelecionarTodos())
         {
             if (f.Id != idIgnorado && f.Cnpj == cnpj)
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool ExistemMedicamentosDoFornecedor(int idFornecedor)
+    {
+        foreach (Medicamento m in repositorioMedicamento.SelecionarTodos())
+        {
+            if (m.Fornecedor?.Id == idFornecedor)
                 return true;
         }
 

@@ -1,0 +1,31 @@
+@model ExcluirFornecedorViewModel
+
+@{
+    ViewBag.Titulo = "Exclusão de Fornecedor";
+}
+
+<div class="row justify-content-start">
+    <form class="col-lg-6" asp-action="Excluir" asp-route-id="@Model.Id" method="post">
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div asp-validation-summary="ModelOnly" class="alert alert-warning" role="alert"></div>
+        }
+
+        <div class="alert alert-danger" role="alert">
+            Você deseja realmente excluir o fornecedor "@Model.Nome"? Esta ação é irreversível.
+        </div>
+
+        <input type="hidden" asp-for="Nome">
+
+        <div class="d-flex gap-3 mt-4">
+            <button class="btn btn-danger" type="submit">
+                <i class="bi bi-trash3"></i>
+                Confirmar exclusão
+            </button>
+            <a class="btn btn-outline-secondary" asp-action="Listar">
+                <i class="bi bi-arrow-return-left"></i>
+                Voltar para a lista
+            </a>
+        </div>
+    </form>
+</div>
