@@ -1,7 +1,6 @@
 using ControleDeMedicamentos.WebApp.Compartilhado;
-using ControleDeMedicamentos.WebApp.ModuloPacientes;
 
-namespace ControleDeMedicamentos.WebApp.Modulos.ModuloPacientes;
+namespace ControleDeMedicamentos.WebApp.ModuloPacientes;
 
 public class TelaPaciente : TelaBase<Paciente>, ITelaOpcoes, ITelaCrud
 {

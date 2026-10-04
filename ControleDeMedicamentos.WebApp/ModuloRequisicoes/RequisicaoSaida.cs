@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using ControleDeMedicamentos.WebApp.Compartilhado;
 using ControleDeMedicamentos.WebApp.ModuloMedicamentos;
-using ControleDeMedicamentos.WebApp.Modulos.ModuloPacientes;
+using ControleDeMedicamentos.WebApp.ModuloPacientes;
 
 namespace ControleDeMedicamentos.WebApp.ModuloRequisicoes
 {

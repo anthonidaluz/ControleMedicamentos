@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ControleDeMedicamentos.WebApp.Compartilhado.Arquivos;
-using ControleDeMedicamentos.WebApp.Modulos.ModuloPacientes;
 
 namespace ControleDeMedicamentos.WebApp.ModuloPacientes
 {
