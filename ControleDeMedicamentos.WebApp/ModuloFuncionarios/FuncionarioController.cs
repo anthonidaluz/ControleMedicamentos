@@ -100,6 +100,33 @@ public class FuncionarioController : Controller
         return RedirectToAction(nameof(Listar));
     }
 
+    [HttpGet]
+    public ActionResult Excluir(int id)
+    {
+        Funcionario? funcionarioSelecionado = repositorio.SelecionarPorId(id);
+
+        if (funcionarioSelecionado == null)
+            return NotFound();
+
+        ExcluirFuncionarioViewModel viewModel = new ExcluirFuncionarioViewModel(
+            id,
+            funcionarioSelecionado.Nome
+        );
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    public ActionResult Excluir(ExcluirFuncionarioViewModel excluirVm)
+    {
+        bool conseguiuExcluir = repositorio.Excluir(excluirVm.Id);
+
+        if (!conseguiuExcluir)
+            return NotFound();
+
+        return RedirectToAction(nameof(Listar));
+    }
+
     private bool ExisteFuncionarioComCpf(string cpf, int? idIgnorado = null)
     {
         foreach (Funcionario f in repositorio.SelecionarTodos())
