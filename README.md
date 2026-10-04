@@ -1,6 +1,6 @@
 # Controle de Medicamentos
 
-<img width="1080" height="600" alt="VsDebugConsole_b1gAhu2XYL" src="https://github.com/user-attachments/assets/1464fc4b-6411-41be-a705-65da04f9c3bf" />
+<img width="1920" height="929" alt="chrome_jWBa9LT1l5" src="https://github.com/user-attachments/assets/afd0d598-4de9-4a50-a993-f7ad32eafe03" />
 
 ## Projeto
 
