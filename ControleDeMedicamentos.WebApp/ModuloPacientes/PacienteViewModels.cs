@@ -15,13 +15,11 @@ public record CadastrarPacienteViewModel(
         ErrorMessage = "O campo \"Telefone\" deve estar no formato (XX) XXXXX-XXXX ou (XX) XXXX-XXXX.")]
     string Telefone,
 
-    [Display(Name = "Cartão do SUS")]
     [Required(ErrorMessage = "O campo \"Cartão do SUS\" é obrigatório.")]
     [RegularExpression(@"^\d{15}$",
         ErrorMessage = "O campo \"Cartão do SUS\" deve conter exatamente 15 dígitos numéricos.")]
     string CartaoSus,
 
-    [Display(Name = "CPF")]
     [Required(ErrorMessage = "O campo \"CPF\" é obrigatório.")]
     [RegularExpression(@"^\d{11}$",
         ErrorMessage = "O campo \"CPF\" deve conter exatamente 11 dígitos numéricos.")]
@@ -41,13 +39,11 @@ public record EditarPacienteViewModel(
         ErrorMessage = "O campo \"Telefone\" deve estar no formato (XX) XXXXX-XXXX ou (XX) XXXX-XXXX.")]
     string Telefone,
 
-    [Display(Name = "Cartão do SUS")]
     [Required(ErrorMessage = "O campo \"Cartão do SUS\" é obrigatório.")]
     [RegularExpression(@"^\d{15}$",
         ErrorMessage = "O campo \"Cartão do SUS\" deve conter exatamente 15 dígitos numéricos.")]
     string CartaoSus,
 
-    [Display(Name = "CPF")]
     [Required(ErrorMessage = "O campo \"CPF\" é obrigatório.")]
     [RegularExpression(@"^\d{11}$",
         ErrorMessage = "O campo \"CPF\" deve conter exatamente 11 dígitos numéricos.")]

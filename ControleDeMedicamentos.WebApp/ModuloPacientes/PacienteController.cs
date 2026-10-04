@@ -33,4 +33,42 @@ public class PacienteController : Controller
 
         return View(viewModels);
     }
+
+    [HttpGet]
+    public ActionResult Cadastrar()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public ActionResult Cadastrar(CadastrarPacienteViewModel cadastrarVm)
+    {
+        if (ExistePacienteComCartaoSus(cadastrarVm.CartaoSus))
+            ModelState.AddModelError(nameof(cadastrarVm.CartaoSus), "Já existe um paciente cadastrado com o Cartão do SUS informado.");
+
+        if (!ModelState.IsValid)
+            return View(cadastrarVm);
+
+        Paciente paciente = new Paciente(
+            cadastrarVm.Nome,
+            cadastrarVm.Telefone,
+            cadastrarVm.CartaoSus,
+            cadastrarVm.Cpf
+        );
+
+        repositorio.Cadastrar(paciente);
+
+        return RedirectToAction(nameof(Listar));
+    }
+
+    private bool ExistePacienteComCartaoSus(string cartaoSus, int? idIgnorado = null)
+    {
+        foreach (Paciente p in repositorio.SelecionarTodos())
+        {
+            if (p.Id != idIgnorado && p.CartaoSus == cartaoSus)
+                return true;
+        }
+
+        return false;
+    }
 }
