@@ -78,6 +78,53 @@ public class MedicamentoController : Controller
         return RedirectToAction(nameof(Listar));
     }
 
+    [HttpGet]
+    public ActionResult Editar(int id)
+    {
+        Medicamento? medicamentoSelecionado = repositorio.SelecionarPorId(id);
+
+        if (medicamentoSelecionado == null)
+            return NotFound();
+
+        EditarMedicamentoViewModel viewModel = new EditarMedicamentoViewModel(
+            id,
+            medicamentoSelecionado.Nome,
+            medicamentoSelecionado.Descricao,
+            medicamentoSelecionado.Fornecedor?.Id ?? 0
+        ) with
+        { Fornecedores = ObterFornecedores() };
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    public ActionResult Editar(EditarMedicamentoViewModel editarVm)
+    {
+        Fornecedor? fornecedor = repositorioFornecedor.SelecionarPorId(editarVm.FornecedorId);
+
+        if (fornecedor == null)
+            ModelState.AddModelError(nameof(editarVm.FornecedorId), "O campo \"Fornecedor\" deve ser preenchido.");
+
+        if (ExisteMedicamentoComNome(editarVm.Nome, editarVm.Id))
+            ModelState.AddModelError(nameof(editarVm.Nome), "Já existe um medicamento cadastrado com este nome.");
+
+        if (!ModelState.IsValid || fornecedor == null)
+            return View(editarVm with { Fornecedores = ObterFornecedores() });
+
+        Medicamento medicamentoAtualizado = new Medicamento(
+            editarVm.Nome,
+            editarVm.Descricao,
+            fornecedor
+        );
+
+        bool conseguiuEditar = repositorio.Editar(editarVm.Id, medicamentoAtualizado);
+
+        if (!conseguiuEditar)
+            return NotFound();
+
+        return RedirectToAction(nameof(Listar));
+    }
+
     private List<FornecedorMedicamentoViewModel> ObterFornecedores()
     {
         List<FornecedorMedicamentoViewModel> viewModels = [];
